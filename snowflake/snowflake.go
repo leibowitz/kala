@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/mattheath/kala/util"
+	log "github.com/hailocab/seelog"
 )
 
 const (
@@ -94,6 +95,7 @@ func (sf *Snowflake) Generate() (uint64, error) {
 
 	// Get the current timestamp in ms, adjusted to our custom epoch
 	t := util.CustomTimestamp(sf.epoch, time.Now())
+	log.Infof("time is %+v", t)
 
 	// Update snowflake with this, which will increment sequence number if needed
 	err := sf.update(t)
@@ -124,6 +126,7 @@ func (sf *Snowflake) setup() {
 // update Snowflake with a new timestamp, causing sequence numbers to increment if necessary
 func (sf *Snowflake) update(t int64) error {
 	if t != sf.lastTimestamp {
+		log.Infof("time is %+v %+v", t, sf.lastTimestamp)
 		switch {
 		case t < sf.lastTimestamp:
 			return fmt.Errorf("Time moved backwards - unable to generate IDs for %v milliseconds", sf.lastTimestamp-t)
@@ -135,7 +138,9 @@ func (sf *Snowflake) update(t int64) error {
 		sf.sequence = 0
 		sf.lastTimestamp = t
 	} else {
+		log.Infof("Incrementing sequence: %+v", sf.sequence)
 		sf.sequence = sf.sequence + 1
+		log.Infof("Done incrementing sequence: %+v", sf.sequence)
 		if sf.sequence > sf.maxSequence {
 			return ErrSequenceOverflow
 		}
