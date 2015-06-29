@@ -73,6 +73,14 @@ type Snowflake struct {
 
 // Mint a new 64bit ID based on the current time, worker id and sequence
 func (sf *Snowflake) Mint() (string, error) {
+	id, err := sf.Generate()
+	if err != nil {
+		return "", err
+	}
+	return strconv.FormatUint(id, 10), nil
+}
+
+func (sf *Snowflake) Generate() (uint64, error) {
 	sf.Lock()
 	defer sf.Unlock()
 
@@ -81,7 +89,7 @@ func (sf *Snowflake) Mint() (string, error) {
 
 	// Ensure we only mint IDs if correctly configured
 	if sf.workerId > sf.maxWorkerId {
-		return "", ErrInvalidWorkerId
+		return 0, ErrInvalidWorkerId
 	}
 
 	// Get the current timestamp in ms, adjusted to our custom epoch
@@ -90,13 +98,11 @@ func (sf *Snowflake) Mint() (string, error) {
 	// Update snowflake with this, which will increment sequence number if needed
 	err := sf.update(t)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 
 	// Mint a new ID
-	id := sf.mintId()
-
-	return strconv.FormatUint(id, 10), nil
+	return sf.mintId(), nil
 }
 
 // setup is called the first time we mint an ID and locks in our configured options
