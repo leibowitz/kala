@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/mattheath/kala/util"
 	log "github.com/hailocab/seelog"
+	"github.com/mattheath/kala/util"
 )
 
 const (
@@ -103,8 +103,10 @@ func (sf *Snowflake) Generate() (uint64, error) {
 		return 0, err
 	}
 
+	id := sf.mintId()
+	log.Info("%+v %+v %+v %+v %+v, %d", sf.lastTimestamp, sf.workerIdBits, sf.sequenceBits, sf.workerId, sf.sequence, id)
 	// Mint a new ID
-	return sf.mintId(), nil
+	return id, nil
 }
 
 // setup is called the first time we mint an ID and locks in our configured options
