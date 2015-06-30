@@ -105,10 +105,11 @@ func (sf *Snowflake) Generate() (uint64, error) {
 
 	id := sf.mintId()
 
-	log.Info("%+v %+v %+v %+v %+v, %d", sf.lastTimestamp, sf.workerIdBits, sf.sequenceBits, sf.workerId, sf.sequence, id)
-	log.Info("%d", uint64(sf.lastTimestamp)<<(sf.workerIdBits+sf.sequenceBits))
-	log.Info("%d", uint64(sf.workerId)<<sf.sequenceBits)
-	log.Info("%d", uint64(sf.lastTimestamp)<<(sf.workerIdBits+sf.sequenceBits)|uint64(sf.workerId)<<sf.sequenceBits)
+	log.Infof("%+v %+v %+v %+v %+v, %d", sf.lastTimestamp, sf.workerIdBits, sf.sequenceBits, sf.workerId, sf.sequence, id)
+	log.Infof("%d", uint64(sf.lastTimestamp)<<(sf.workerIdBits+sf.sequenceBits))
+	log.Infof("%d", uint64(sf.workerId)<<sf.sequenceBits)
+	log.Infof("%d", uint64(sf.lastTimestamp)<<(sf.workerIdBits+sf.sequenceBits)|uint64(sf.workerId)<<sf.sequenceBits)
+	log.Infof("%d", id)
 	// Mint a new ID
 	return id, nil
 }
